@@ -16,7 +16,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "npm run build && node --test dist/test/*.test.js",
     "demo": "npm run build && node dist/src/cli.js demo",
-    "example": "npm run build && node dist/examples/basic.js"
+    "example": "npm run build && node dist/examples/basic.js",
+    "prepare": "npm run build"
   },
   "keywords": [
     "ai-agents",

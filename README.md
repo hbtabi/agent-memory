@@ -50,7 +50,7 @@ npm run example   # minimal agent loop (examples/basic.ts)
 ### Library
 
 ```ts
-import { AgentMemory } from "agent-memory";
+import { AgentMemory } from "agent-memory"; // npm install github:hbtabi/agent-memory
 
 const memory = await AgentMemory.open("./agent.memory.json");
 
@@ -70,13 +70,15 @@ await memory.save();
 ### CLI
 
 ```bash
-npx agent-memory add "Amara prefers oat milk" --kind semantic --tags coffee
-npx agent-memory recall "what milk does Amara like?" -k 3
-npx agent-memory context "draft a coffee recipe"
-npx agent-memory list --kind episodic
-npx agent-memory consolidate --similarity 0.3
-npx agent-memory prune --min-strength 0.15
-npx agent-memory stats
+npm link    # exposes the `agent-memory` command (or run: node dist/src/cli.js ...)
+
+agent-memory add "Amara prefers oat milk" --kind semantic --tags coffee
+agent-memory recall "what milk does Amara like?" -k 3
+agent-memory context "draft a coffee recipe"
+agent-memory list --kind episodic
+agent-memory consolidate --similarity 0.3
+agent-memory prune --min-strength 0.15
+agent-memory stats
 ```
 
 All commands take `--file <path>` (default `./agent.memory.json`).
@@ -87,7 +89,7 @@ All commands take `--file <path>` (default `./agent.memory.json`).
 export OPENAI_API_KEY=sk-...
 export OPENAI_BASE_URL=https://api.openai.com/v1   # or Ollama / LM Studio / OpenRouter
 export AGENT_MEMORY_MODEL=gpt-4o-mini
-npx agent-memory consolidate
+agent-memory consolidate
 ```
 
 Set `AGENT_MEMORY_OFFLINE=1` to force the extractive summariser. If an API call fails, it falls back to extractive
