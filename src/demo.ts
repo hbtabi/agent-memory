@@ -27,23 +27,23 @@ export async function runDemo(opts: { file?: string; quiet?: boolean } = {}): Pr
   const mem = new AgentMemory({ clock: () => now, summarizer: summarizerFromEnv(), idFactory: counter() });
   const log = opts.quiet ? () => {} : (s = "") => console.log(s);
 
-  log(c.bold("① Two weeks of conversations → episodic memories") + c.dim("  (importance estimated offline)"));
+  log(c.bold("1. Two weeks of conversations → episodic memories") + c.dim("  (importance estimated offline)"));
   for (const [day, text, tags] of EPISODES) {
     now = start + day * DAY;
     const pinned = tags.includes("health"); // safety-critical facts get pinned
     const m = mem.remember(text, { tags, pinned });
-    log(`  ${c.dim(`day ${String(Math.floor(day)).padStart(2)}`)}  ${bar(m.importance, 8)} ${m.importance.toFixed(2)}  ${trunc(text, 76)}${pinned ? c.yellow(" 📌") : ""}`);
+    log(`  ${c.dim(`day ${String(Math.floor(day)).padStart(2)}`)}  ${bar(m.importance, 8)} ${m.importance.toFixed(2)}  ${trunc(text, 76)}${pinned ? c.yellow(" [pinned]") : ""}`);
   }
 
   now = start + 14 * DAY;
-  log("\n" + c.bold("② Consolidation: cluster related episodes → semantic facts"));
+  log("\n" + c.bold("2. Consolidation: cluster related episodes → semantic facts"));
   const { created, clusters } = await mem.consolidate({ similarity: 0.2 });
   created.forEach((f, i) => {
     log(`  ${c.magenta("◆")} ${trunc(f.text, 110)}`);
     log(c.dim(`    from ${clusters[i]!.length} episodes · importance ${f.importance.toFixed(2)}`));
   });
 
-  log("\n" + c.bold("③ Recall on day 14") + c.dim("  score = 0.6·relevance + 0.2·recency + 0.2·importance"));
+  log("\n" + c.bold("3. Recall on day 14") + c.dim("  score = 0.6·relevance + 0.2·recency + 0.2·importance"));
   for (const q of ["What milk should I use in Amara's coffee?", "When is the menu deadline?", "Ideas to grow her Instagram"]) {
     log(`  ${c.cyan("?")} ${c.bold(q)}`);
     for (const { memory, score } of mem.recall(q, { k: 3 })) {
@@ -54,7 +54,7 @@ export async function runDemo(opts: { file?: string; quiet?: boolean } = {}): Pr
     }
   }
 
-  log("\n" + c.bold("④ Decay") + c.dim("  episodic half-life 3 days, semantic 60 days"));
+  log("\n" + c.bold("4. Decay") + c.dim("  episodic half-life 3 days, semantic 60 days"));
   const small = mem.all("episodic").find((m) => m.tags.includes("smalltalk"))!;
   const fact = created[0];
   for (const d of [8, 14, 30]) {
@@ -66,13 +66,13 @@ export async function runDemo(opts: { file?: string; quiet?: boolean } = {}): Pr
   now = start + 30 * DAY;
   const before = new Map(mem.all().map((m) => [m.id, m.text]));
   const removed = mem.prune({ minStrength: 0.12 });
-  log("\n" + c.bold("⑤ Prune on day 30") + c.dim(`  strength = ½·importance + ½·recency < 0.12 → removed ${removed.length}:`));
+  log("\n" + c.bold("5. Prune on day 30") + c.dim(`  strength = ½·importance + ½·recency < 0.12 → removed ${removed.length}:`));
   for (const id of removed) log(c.dim(`    ✗ ${trunc(before.get(id) ?? id, 90)}`));
 
   now = start + 30 * DAY + 2 * HOUR;
-  log("\n" + c.bold("⑥ Context block for the next LLM call"));
+  log("\n" + c.bold("6. Context block for the next LLM call"));
   const ctx = mem.buildContext("Draft a new coffee recipe for the autumn menu", { k: 4 });
-  for (const line of ctx.split("\n")) log("  " + c.green(line));
+  for (const line of ctx.split("\n")) log("  " + c.green(trunc(line, 112)));
 
   const s = mem.stats();
   log("\n" + c.dim(`${s.total} memories kept (${s.episodic} episodic, ${s.semantic} semantic) · avg strength ${s.avgStrength.toFixed(2)}`));
