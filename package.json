@@ -1,0 +1,38 @@
+{
+  "name": "agent-memory",
+  "version": "0.1.0",
+  "description": "Long-term memory layer for AI agents: episodic + semantic stores, TF-IDF retrieval, decay and importance scoring.",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "bin": {
+    "agent-memory": "dist/src/cli.js"
+  },
+  "files": [
+    "dist/src"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && node --test dist/test/*.test.js",
+    "demo": "npm run build && node dist/src/cli.js demo",
+    "example": "npm run build && node dist/examples/basic.js"
+  },
+  "keywords": [
+    "ai-agents",
+    "llm",
+    "memory",
+    "tf-idf",
+    "rag",
+    "typescript"
+  ],
+  "author": "Mohammed Hassan bin Tayyeb <hasaantayyb1@gmail.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "typescript": "^5.5.0"
+  }
+}
